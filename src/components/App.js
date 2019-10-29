@@ -19,12 +19,12 @@ class App extends Component {
   }
 
   state = {
-    users: []
+    users: [],  
   }
 
   addUsersToState(event, user) {
     event.preventDefault()
-    console.table(user)
+   
     this.setState((state) => ({
       users: [...state.users, user]
     }))
@@ -37,7 +37,7 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">React-User List</h1>
         </header>
-        <AddUser getUsers={this.addUsersToState} />
+        <AddUser getUsers={this.addUsersToState} allUsers={this.state.users} />
         <UserList showUsers={this.state.users} />
       </div>
     );
