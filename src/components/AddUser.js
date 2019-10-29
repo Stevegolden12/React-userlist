@@ -10,9 +10,9 @@ class AddUser extends Component {
     this.checkButton = this.checkButton.bind(this);
   }
   state = {
-    user: [],
     isInputsEmpty: [true, true, true],
     isThisButtonDisable: true,
+    isDuplicateUserName: false,
   }
 
   checkInputs(event, index) {
@@ -28,11 +28,9 @@ class AddUser extends Component {
       this.setState((prevState) => ({
         isInputsEmpty: isInputsEmptyCopy
       }))
-
-      console.log(isInputsEmptyCopy)
-
+      
       if (isInputsEmptyCopy[0] === false && isInputsEmptyCopy[1] === false && isInputsEmptyCopy[2] === false) {
-        console.log("Button would be enable")
+      
         this.setState((prevState) => ({
           isThisButtonDisable: !prevState
         }))
@@ -51,7 +49,7 @@ class AddUser extends Component {
         }))
 
         this.forceUpdate();
-        console.log("button should false")
+ 
        
       }
     }
@@ -68,15 +66,30 @@ class AddUser extends Component {
     const firstName = document.getElementById('firstnameinput').value;
     const lastName = document.getElementById('lastnameinput').value;
     const userName = document.getElementById('usernameinput').value;
+
     const gamesPlayed = 0;
-    console.log(lastName)
-    const user = {
-      firstName: firstName,
-      lastName: lastName,
-      userName: userName,
-      gamesPlayed: gamesPlayed,
+
+    if (!this.props.allUsers.some(user => user.userName === userName)) {
+      
+      const user = {
+        firstName: firstName,
+        lastName: lastName,
+        userName: userName,
+        gamesPlayed: gamesPlayed,
+      }
+      this.props.getUsers(event, user)
+
+      if (this.state.isDuplicateUserName === true) {
+        this.setState((prevState) => ({
+          isDuplicateUserName: false
+        }))
+      }
+    } else {
+    
+      this.setState((prevState) => ({
+        isDuplicateUserName: true
+      }))
     }
-    this.props.getUsers(event, user)
   }
 
   render() {
@@ -90,6 +103,7 @@ class AddUser extends Component {
         <label htmlFor="username">Enter username</label>
         <input id="usernameinput" placeholder="username" onChange={(event) => this.checkInputs(event, 2)} />
         <button disabled={this.state.isThisButtonDisable}>Add User</button> 
+        {this.state.isDuplicateUserName === true && <div className="duplicateWarning">Please choose another username</div>}
       </form>
     )
   }
